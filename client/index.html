@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Prediction</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Habeeb Temperature Forecast for Global Cities</h1>
+        <form id="prediction-form" onsubmit="onClickedEstimatePrice(); return false;">
+            <div class="form-group">
+                <label for="city">City:</label>
+                <select id="city" name="city" required>
+                    <option value="" disabled selected>Select a city</option>
+                    <!-- Dropdown options will be added dynamically -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="year">Year:</label>
+                <input type="number" id="year" name="year" min="1900" max="2050" required>
+            </div>
+            <div class="form-group">
+                <label for="month">Month:</label>
+                <input type="number" id="month" name="month" min="1" max="12" required>
+            </div>
+            <div class="form-group">
+                <label for="tolerance">Tolerance (°C):</label>
+                <input type="number" id="tolerance" name="tolerance" value="1" min="1" max="3" required>
+            </div>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result" class="result">
+            <div class="predicted-temperature">
+                <p id="uiPredictionSentence"></p>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

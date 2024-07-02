@@ -1,0 +1,21 @@
+runtime: python311
+
+entrypoint: gunicorn -b :$PORT main:app
+
+instance_class: F2
+env_variables:
+  APP_ENV: 'production'
+
+handlers:
+  - url: /client
+    static_dir: client
+
+  - url: /
+    static_files: client/index.html
+    upload: client/index.html
+
+  - url: /static
+    static_dir: client
+
+  - url: /.*
+    script: auto
