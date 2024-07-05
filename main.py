@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
+# from flask_cors import CORS
 import util
 
 app = Flask(__name__, static_folder='client', static_url_path='')
-CORS(app)
+# CORS(app)
 
 @app.route('/')
 def serve_home():
@@ -11,8 +11,12 @@ def serve_home():
 
 @app.route('/get_city_names', methods=['GET'])
 def get_city_names():
-    cities = util.get_city_names()
-    return jsonify({'cities': cities})
+    response = jsonify({
+        'cities':util.get_city_names()
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    # cities = util.get_city_names()
+    return response
 
 @app.route('/predict_temperature', methods=['POST'])
 def predict_temperature():
@@ -21,6 +25,7 @@ def predict_temperature():
     month = int(request.form.get('month'))
     estimated_temperature = util.predict_temperature(city, year, month)
     return jsonify({'estimated_temperature': estimated_temperature})
+    
 
 @app.route('/predict_temperature_range', methods=['POST'])
 def predict_temperature_range():
