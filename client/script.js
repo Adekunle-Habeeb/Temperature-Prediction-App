@@ -8,8 +8,8 @@ function onClickedEstimatePrice() {
     var predictionSentence = document.getElementById("uiPredictionSentence");
 
     // var url = "/predict_temperature_range";
-    var url = "http://127.0.0.1:5000/predict_temperature_range"
-    // var url = 'https://temperature-prediction-app-23pw.onrender.com/get_city_names'
+    // var url = "http://127.0.0.1:8000/predict_temperature_range"
+    var url = 'https://temperature-prediction-app-23pw.onrender.com/get_city_names'
     // var url = "/api/predict_temperature_range";
 
 
@@ -42,8 +42,8 @@ function onClickedEstimatePrice() {
 function onPageLoad() {
     console.log("Document loaded");
     // var url = "/api/get_city_names";
-    var url = "http://127.0.0.1:5000/get_city_names"
-    // var url = 'https://temperature-prediction-app-23pw.onrender.com/get_city_names'
+    // var url = "http://127.0.0.1:8000/get_city_names"
+    var url = 'https://temperature-prediction-app-23pw.onrender.com/get_city_names'
     // s
 
     $.get(url, function (data, status) {
