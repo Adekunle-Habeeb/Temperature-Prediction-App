@@ -38,4 +38,4 @@ def static_files(path):
 if __name__ == "__main__":
     print("Starting Python Flask Server For Temperature Prediction...")
     util.load_temperature_model_artifacts()
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=5000)
