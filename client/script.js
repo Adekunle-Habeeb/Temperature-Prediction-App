@@ -68,10 +68,10 @@
 
 function getBaseUrl() {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'http://127.0.0.1:8000'; // Local backend URL
+        return 'http://127.0.0.1:8001'; // Local backend URL
     } else {
         // return 'https://habeeb-temp-app.el.r.appspot.com'; // Production URL
-        return 'https://temperature-prediction-app-23pw.onrender.com'
+        // return 'https://temperature-prediction-app-23pw.onrender.com'
     }
 }
 
