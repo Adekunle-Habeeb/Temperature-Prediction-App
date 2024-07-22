@@ -58,3 +58,5 @@ if __name__ == '__main__':
     print(predict_temperature('los angeles', 1990, 6))
     print(predict_temperature('chicago', 1990, 6))
     print(predict_temperature('lagos', 1990, 6))
+
+

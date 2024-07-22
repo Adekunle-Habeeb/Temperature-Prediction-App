@@ -1,58 +1,71 @@
-from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
 import util
+import streamlit as st
 
-app = Flask(__name__, static_folder='client', static_url_path='')
-CORS(app)
+# Load the model artifacts when the script is run
+util.load_temperature_model_artifacts()
 
-@app.route('/')
-def serve_home():
-    return send_from_directory(app.static_folder, 'index.html')
+# Streamlit components
+st.set_page_config(
+    page_title="Habeeb Temperature Forecast",
+    page_icon="🌍",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
-# @app.route('/get_city_names', methods=['GET'])
-# def get_city_names():
-#     cities = util.get_city_names()
-#     return jsonify({'cities': cities})
+st.title("🌍 Habeeb Temperature Forecast for Global Cities")
 
+# Sidebar for user input
+st.sidebar.header("Input Parameters")
+city = st.sidebar.selectbox("Select city", util.get_city_names())
+year = st.sidebar.number_input("Enter year", min_value=1900, max_value=2100, value=2023)
+month = st.sidebar.number_input("Enter month", min_value=1, max_value=12, value=1)
+tolerance = st.sidebar.number_input("Enter tolerance for range prediction", min_value=0.1, max_value=3.0, value=1.0, step=0.1)
 
-@app.route('/get_city_names', methods=['GET'])
-def get_city_names():
-    try:
-        cities = util.get_city_names()
-        if cities:
-            response = jsonify({'cities': cities})
-        else:
-            response = jsonify({'cities': []})  # Ensure an empty array is returned if no cities found
-    except Exception as e:
-        print(f"Error fetching city names: {str(e)}")
-        response = jsonify({'cities': None})  # Return null or None if an error occurs
+# Main page for displaying results
+tab1, tab2 = st.tabs(["Temperature Prediction", "Temperature Range Prediction"])
 
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+with tab1:
+    if st.button("Predict Temperature"):
+        estimated_temperature = util.predict_temperature(city, year, month)
+        st.metric(
+            label=f"Estimated Temperature for {city.title()} in {year}-{month}",
+            value=f"{estimated_temperature}°C",
+            delta=f"{estimated_temperature - 0.5}°C to {estimated_temperature + 0.5}°C",
+        )
+        st.write(f"The temperature forecast for {city.title()} for {month} in the year {year} is {estimated_temperature}°C.")
 
+with tab2:
+    if tolerance > 3:
+        st.error("Tolerance value must not be greater than 3. Please adjust the tolerance value.")
+    else:
+        if st.button("Predict Temperature Range"):
+            lower_bound, upper_bound = util.predict_temp_range(city, year, month, tolerance)
+            st.metric(
+                label=f"Temperature Range for {city.title()} in {year}-{month}",
+                value=f"{lower_bound}°C to {upper_bound}°C",
+            )
+            st.write(f"The temperature forecast range for {city.title()} for {month} in the year {year} is {lower_bound}°C to {upper_bound}°C.")
 
-@app.route('/predict_temperature', methods=['POST'])
-def predict_temperature():
-    city = request.form.get('city')
-    year = int(request.form.get('year'))
-    month = int(request.form.get('month'))
-    estimated_temperature = util.predict_temperature(city, year, month)
-    return jsonify({'estimated_temperature': estimated_temperature})
-
-@app.route('/predict_temperature_range', methods=['POST'])
-def predict_temperature_range():
-    city = request.form.get('city')
-    year = int(request.form.get('year'))
-    month = int(request.form.get('month'))
-    tolerance = float(request.form.get('tolerance', 1.0))
-    lower_bound, upper_bound = util.predict_temp_range(city, year, month, tolerance)
-    return jsonify({'lower_bound': lower_bound, 'upper_bound': upper_bound})
-
-@app.route('/client/<path:path>')
-def static_files(path):
-    return send_from_directory('client', path)
+# Footer with additional information
+st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #f1f1f1;
+        color: #333;
+        text-align: center;
+        padding: 10px;
+    }
+    </style>
+    <div class="footer">
+        <p>Developed by Habeeb | Temperature Prediction Model</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 if __name__ == "__main__":
-    print("Starting Python Flask Server For Temperature Prediction...")
-    util.load_temperature_model_artifacts()
-    app.run(host='0.0.0.0', port=8001)
+    print("Starting Temperature Prediction Application...")
